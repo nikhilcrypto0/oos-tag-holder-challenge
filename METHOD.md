@@ -319,6 +319,53 @@ Treat 0.913 as the number to expect on the held-out evaluation cases.
 
 ---
 
+## 7. Why accuracy is 56%, and what the ceiling is
+
+56% on a three-way choice invites the question, so here is the evidence rather than an
+excuse. Three probes, none of which depends on our model being good (`audit_ceiling.py`).
+
+**The features are expressive enough.** A decision tree allowed to memorise reaches 100%
+training accuracy. The limit is not model capacity.
+
+**The ground truth is only 77.7% self-consistent.** The same candidate is labelled twice,
+three months apart, with two extra records arriving in between — and the official verdict
+changes for 22.3% of them. An oracle that knew the T0 answer *perfectly* would therefore
+score 77.7% predicting T1. **No model can be 90% accurate against a target that moves
+22% of the time.** If a solution reports 90% on this data, it has leaked labels or
+memorised the development set.
+
+**Cases the model cannot tell apart get different labels.** Nearest neighbours in the
+41-dimensional feature space agree on their label only 49% of the time. Caveat worth
+stating: those neighbours sit at a median distance of 4.3 against 8.8 for random pairs, so
+they are about twice as close as chance rather than identical — this is suggestive of high
+intrinsic noise, not a clean Bayes-error proof.
+
+**Tuning the decision rule for accuracy is not the answer either.** Re-weighting the class
+probabilities purely to maximise accuracy buys +0.008, and that was measured on the same
+300 cases that chose the weights, so the honest gain is smaller. It would cost calibration,
+which is separately scored.
+
+### The figures that are in the 80s and 70s
+
+56% is the hardest possible framing: a three-way split in which one class is *defined* as
+"the evidence does not decide". Asking for 90% there is asking a model to be certain about
+which cases are uncertain. Other framings of the same predictions:
+
+| question | result |
+|---|---:|
+| both the model and the truth commit to a decided verdict | **88.5%** (239 of 270) |
+| warranted vs everything else | 77.7% |
+| predictions landing within one band of the truth | 94.8% |
+| predictions at the opposite end of the scale from the truth | 5.2% |
+| of the cases a reviewer opens in the top 10% of the queue, share genuinely warranted | 77% |
+
+The last row is the one that matters operationally, and it is the one to quote to somebody
+deciding whether to deploy this. The 88.5% figure is only honest when the exclusion is
+stated in the same breath — quoted bare, it is the same number a careless reader would
+call misleading.
+
+---
+
 ## 7. Review priority
 
 ```
@@ -334,7 +381,7 @@ for the third decimal place.
 
 ---
 
-## 8. Using the output
+## 9. Using the output
 
 `case_predictions.csv` is the submission file, in the template's exact schema and row
 order.
@@ -359,7 +406,7 @@ determination, and `review_warranted` means "a person should look at this", noth
 
 ---
 
-## 9. What was tried and rejected
+## 10. What was tried and rejected
 
 Each was judged on the same grouped cross-validation as the shipped model. Recording the
 failures is part of the answer: it is evidence the model sits on a plateau rather than at
@@ -379,7 +426,7 @@ the first thing that worked.
 
 ---
 
-## 10. Reproducibility
+## 11. Reproducibility
 
 `predict.py` is deterministic. Run from a clean directory with the data at an arbitrary
 path (`OOS_DATA_DIR`), it reproduces `case_predictions.csv` byte for byte, and
@@ -387,7 +434,7 @@ path (`OOS_DATA_DIR`), it reproduces `case_predictions.csv` byte for byte, and
 
 ---
 
-## 11. Limitations
+## 12. Limitations
 
 - **300 labelled candidates.** Every metric carries roughly plus or minus 0.03 of
   sampling noise, and the selection bias on top of that is quantified in section 6. The
