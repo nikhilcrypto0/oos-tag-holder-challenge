@@ -366,7 +366,7 @@ call misleading.
 
 ---
 
-## 7. Review priority
+## 8. Review priority
 
 ```
 review_priority = p(review_warranted) + 0.5 x p(insufficient_evidence)
