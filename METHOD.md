@@ -365,7 +365,17 @@ path (`OOS_DATA_DIR`), it reproduces `case_predictions.csv` byte for byte, and
 - **300 labelled candidates.** Every metric carries roughly plus or minus 0.03 of
   sampling noise, and the selection bias on top of that is quantified in section 6. The
   half-life and feature blocks were chosen on the flat part of their curves rather than
-  at the cross-validation optimum.
+  at the cross-validation optimum. That said, more labels would not buy much: the
+  learning curve (`audit_learning_curve.py`, held-out set held at 75 candidates
+  throughout) has already flattened.
+
+  | training candidates | 40 | 70 | 105 | 145 | 190 | 225 |
+  |---|---:|---:|---:|---:|---:|---:|
+  | log loss | 0.976 | 0.943 | 0.928 | 0.922 | 0.916 | 0.914 |
+
+  The marginal value of 50 extra labelled candidates falls from +0.054 log loss early on
+  to +0.003 at the top of the range. The binding constraint is the noise in the evidence
+  itself, not the size of the label set.
 - **About 13% of evidence rows remain unattributable** after all three resolution passes.
   The alias route recovers the replaced row only where the candidate's own vehicle gave a
   clean 3 + 1 split, which is two thirds of candidates. For the rest, nothing in the

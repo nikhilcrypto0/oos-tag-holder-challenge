@@ -59,6 +59,7 @@ python model_selection.py
 | `experiments.py` | ideas tested and rejected (METHOD.md section 9) |
 | `audit_unused.py`, `audit_alias.py`, `audit_features.py` | the process audit: fields never used, the alias hypothesis, the features it surfaced |
 | `audit_honest.py` | nested selection — the unbiased estimate (METHOD.md section 6) |
+| `audit_learning_curve.py` | what another labelled candidate is worth (METHOD.md section 11) |
 | `extra_features.py` | feature builder shared by the audit scripts |
 
 ## Headline numbers
