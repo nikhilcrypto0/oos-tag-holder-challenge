@@ -17,6 +17,7 @@ row's three probabilities sum to exactly 1 in decimal; `review_priority` is in [
 
 | file | what it is |
 |---|---|
+| `dist/console.html` | the reviewer console: priority queue over all 12,000 cases, per-case evidence, and the real model running live in the page (self-contained, opens from a file) |
 | `case_audit.csv` | the same 24,000 rows plus the evidence behind each score: newest record per feed with its date, evidence volume and freshness, direction of the T1 update, and the signed contribution of each feature block. Intended for the staff member working the queue. |
 | `model_card.json` | fitted thresholds and standardised coefficients, plus the cross-validated metrics |
 | `diagnostics_output.txt` | output of `diagnostics.py` — the evidence for every structural claim in METHOD.md |
@@ -57,6 +58,8 @@ python model_selection.py
 | `validate.py` | submission-format checks |
 | `diagnostics.py`, `model_selection.py` | reproduce the claims in METHOD.md |
 | `experiments.py` | ideas tested and rejected (METHOD.md section 9) |
+| `export_console.py`, `console_template.html`, `build_console.sh` | build the reviewer console |
+| `llm_baseline.py` | measures an LLM classifier on the same task, for the "why not AI?" question |
 | `audit_unused.py`, `audit_alias.py`, `audit_features.py` | the process audit: fields never used, the alias hypothesis, the features it surfaced |
 | `audit_honest.py` | nested selection — the unbiased estimate (METHOD.md section 6) |
 | `audit_learning_curve.py` | what another labelled candidate is worth (METHOD.md section 11) |
