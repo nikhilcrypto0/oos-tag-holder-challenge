@@ -7,3 +7,7 @@ __pycache__/
 # your local copy with OOS_DATA_DIR (see README).
 Identify_Out_of_State_Tag_Holders/
 data/
+
+# built artefacts: PDFs are committed, the bundles are not (regenerate with build_pdfs.sh)
+dist/*.zip
+dist/case_predictions.csv

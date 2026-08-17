@@ -21,6 +21,8 @@ row's three probabilities sum to exactly 1 in decimal; `review_priority` is in [
 | `model_card.json` | fitted thresholds and standardised coefficients, plus the cross-validated metrics |
 | `diagnostics_output.txt` | output of `diagnostics.py` — the evidence for every structural claim in METHOD.md |
 | `model_selection_output.txt` | output of `model_selection.py` — model family, feature set, and aggregation comparisons |
+| `FORM_ANSWERS.md` | prepared copy-paste text for the submission form (approach, limitations, at three lengths) |
+| `dist/*.pdf` | the summary and full write-up as PDFs; rebuild with `./build_pdfs.sh` |
 
 ## Running it
 
