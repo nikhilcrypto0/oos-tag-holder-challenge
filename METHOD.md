@@ -174,16 +174,43 @@ fitted by L-BFGS with an L2 penalty (C = 0.02), implemented in `model.py`.
 
 Why ordinal rather than a 3-way classifier: it encodes the banded transition structure
 found in section 1, and it estimates one direction vector plus two thresholds instead of
-three independent ones — which matters at 300 labelled candidates. On identical features
-and identical folds:
+three independent ones — which matters at 300 labelled candidates.
 
-| model | log loss | accuracy | macro AUC | macro F1 |
+Every family was run on identical grouped folds, each with a hyperparameter sweep. The
+boosters were given two extra advantages so the comparison is not a straw man: the
+observed tag state was passed to CatBoost as a genuine nine-level categorical, and each
+booster was also run under the same ordinal decomposition the winner uses
+(`benchmark_models.py`, full table in `benchmark_output.txt`).
+
+| model | log loss | accuracy | macro F1 | macro AUC |
 |---|---:|---:|---:|---:|
-| **ordinal logit** | **0.939** | **0.530** | **0.718** | **0.531** |
-| multinomial logistic | 0.953 | 0.512 | 0.703 | 0.505 |
-| random forest | 0.981 | 0.495 | 0.672 | 0.488 |
-| hist gradient boosting | 1.038 | 0.467 | 0.655 | 0.466 |
-| class prior | 1.096 | 0.355 | 0.500 | 0.175 |
+| **ordinal logistic** | **0.907** | **0.554** | **0.556** | **0.741** |
+| multinomial logistic | 0.924 | 0.538 | 0.532 | 0.725 |
+| random forest | 0.951 | 0.527 | 0.523 | 0.703 |
+| CatBoost (with categorical) | 0.964 | 0.510 | 0.508 | 0.705 |
+| XGBoost | 0.983 | 0.507 | 0.504 | 0.695 |
+| hist gradient boosting | 0.998 | 0.503 | 0.501 | 0.691 |
+| LightGBM | 1.047 | 0.496 | 0.495 | 0.682 |
+| class prior | 1.096 | 0.355 | 0.175 | 0.500 |
+| LLM classifier (Claude Haiku 4.5) | 1.151 | 0.497 | — | 0.659 |
+
+Best configuration shown per family. Three results are worth stating plainly.
+
+**Every tree ensemble loses to plain logistic regression here**, which inverts the usual
+expectation. Three reasons, and they compound: 600 training rows against 41 features is
+an order of magnitude less data than boosting wants; the signal is a smooth, near-monotone
+function of a single latent direction, which trees can only approximate as a staircase,
+spending variance to do it; and the ordinal constraint is information a multiclass tree
+cannot represent at all.
+
+**The gap is mostly calibration, not discrimination.** CatBoost trails on accuracy by
+about four points but on log loss by 0.06 — tree ensembles are poorly calibrated out of
+the box, and calibration is one of the six scored criteria.
+
+**Handing the boosters the ordinal decomposition made them worse**, not better (XGBoost
+0.983 → 1.037, CatBoost 0.964 → 1.145). The decomposition trains two models where there
+was one, and at this sample size the extra variance costs more than the structure gains.
+The ordinal logistic gets the same structure for the price of two scalars.
 
 **Training rows.** T0 and T1 are pooled into 600 rows with a phase indicator, so both
 phases train one model. Cross-validation groups by candidate so a candidate's T0 and T1

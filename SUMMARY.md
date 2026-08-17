@@ -31,9 +31,15 @@ signal worse, because an unrelated name carries an unrelated state.
 `review_not_warranted` to `review_warranted` between phases — every move passes through
 `insufficient_evidence`. That is one latent score with two thresholds, so the model is a
 **proportional-odds ordinal logistic**: one direction vector and two cut-points instead of
-three independent classifiers, which matters at 300 labelled candidates. On identical
-features it beats multinomial logistic (0.953), random forest (0.981) and gradient
-boosting (1.038).
+three independent classifiers, which matters at 300 labelled candidates.
+
+Every family was benchmarked on identical folds with a sweep each, and the boosters were
+given both a real categorical and the same ordinal decomposition: ordinal logistic 0.907,
+multinomial logistic 0.924, random forest 0.951, CatBoost 0.964, XGBoost 0.983, LightGBM
+1.047, and an LLM classifier 1.151 — worse than guessing the base rates. Every tree
+ensemble loses to plain logistic regression here, because 600 rows against 41 features is
+far less data than boosting needs and the signal is a smooth monotone function that trees
+can only approximate as a staircase.
 
 **The current address is the single best record in the data.** The address row with a
 blank end date is where the person lives now, and on its own it out-predicts the entire

@@ -17,3 +17,12 @@
   255/300 scored
   270/300 scored
   285/300 scored
+  300/300 scored
+
+LLM classifier on 300 held-out cases (model: claude-haiku-4-5-20251001)
+  log loss  1.1506
+  accuracy  0.4967
+  macro AUC 0.6593
+  predicted mix [147  53 100] vs true [105 105  90]
+
+ordinal model on the same task: log loss 0.906, accuracy 0.558, macro AUC 0.740
