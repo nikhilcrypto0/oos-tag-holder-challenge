@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+*.pkl
+
+# The challenge data is the organizers' to distribute, not ours. Point the code at
+# your local copy with OOS_DATA_DIR (see README).
+Identify_Out_of_State_Tag_Holders/
+data/
