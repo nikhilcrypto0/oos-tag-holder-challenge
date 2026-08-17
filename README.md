@@ -8,6 +8,17 @@ class probabilities, and a review-priority value, at T0 and T1.
 identities are resolved, why the model is ordinal, the validation results, and the eight
 ideas tested and rejected, and whether the headline number is honest.
 
+## Where to start
+
+| you want | open |
+|---|---|
+| every number in one place | `RESULTS.md` |
+| the one-page story | `SUMMARY.md` (or `dist/OOS_Tag_Challenge_Summary.pdf`) |
+| the full method | `METHOD.md` (or `dist/OOS_Tag_Challenge_Method.pdf`) |
+| the live demo | `dist/console.html` — double-click it, no install needed |
+| text for a submission form | `FORM_ANSWERS.md` |
+| putting this on GitHub | `REPO_SETUP.md` |
+
 ## Submission file
 
 `case_predictions.csv` — 24,000 rows in the template's exact schema and row order. Every
