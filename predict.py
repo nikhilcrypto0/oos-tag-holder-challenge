@@ -18,16 +18,19 @@ from featurize import CORE, build_features
 from model import CLASSES, CLASS_TO_ORD, OrdinalLogit
 from pipeline import BASE, build_evidence, load
 
-C_REG = 0.03
+C_REG = 0.02
 CV_REPEATS = 20
 
 CORE_F = [f"core_{k}" for k in ("sh90", "sh150", "sh365", "shflat", "last_de", "last_age")] + \
          ["core_last_mean", "core_last_std", "core_sh150_std"]
 PER_STREAM_F = [f"{s}_{k}" for s in CORE for k in ("sh150", "last_de")]
+CURRENT_ADDR_F = ["adr_open_de", "adr_open_n", "adr_open_last_de", "adr_open_age"]
+CATEGORY_F = ["ttl_recupd_de", "lic_credupd_de", "ext_refupd_de"]
 SUFFICIENCY_F = ["ev_n", "ev_nullshare", "ev_limited", "ev_badstatus", "ev_n180",
                  "ev_n365", "ev_linkconf", "ev_nstates", "ev_minage"]
 T1_F = ["t1_n", "t1_de", "t1_last_de", "t1_ttl_de", "t1_adr_de", "t1_delta", "phase_t1"]
-COLS = CORE_F + PER_STREAM_F + SUFFICIENCY_F + T1_F + ["obs_state_oos"]
+COLS = (CORE_F + PER_STREAM_F + CURRENT_ADDR_F + CATEGORY_F
+        + SUFFICIENCY_F + T1_F + ["obs_state_oos"])
 
 
 def priority(P):
@@ -47,7 +50,8 @@ STREAM_LABEL = {"adr": "address", "lic": "licence", "ttl": "title",
 # feature-level contributions can look contradictory.  Block sums are stable, and
 # are what the audit trail leads with.
 DRIVER_BLOCKS = {
-    "evidence direction": CORE_F + PER_STREAM_F,
+    "evidence direction": CORE_F + PER_STREAM_F + CATEGORY_F,
+    "current address": CURRENT_ADDR_F,
     "evidence sufficiency": SUFFICIENCY_F,
     "T1 updates": T1_F,
     "observed tag": ["obs_state_oos"],
@@ -62,6 +66,13 @@ FEATURE_LABEL = {
     "core_last_de": "state on the newest record overall",
     "core_last_age": "age of the newest record",
     "core_last_mean": "how many feeds end in DE",
+    "adr_open_de": "current address is in DE",
+    "adr_open_n": "has a current address on file",
+    "adr_open_last_de": "newest current-address record is DE",
+    "adr_open_age": "age of the current-address record",
+    "ttl_recupd_de": "title updates lean DE",
+    "lic_credupd_de": "licence updates lean DE",
+    "ext_refupd_de": "external reference updates lean DE",
     "core_last_std": "disagreement between feeds",
     "core_sh150_std": "recent disagreement between feeds",
     "adr_sh150": "address feed direction", "adr_last_de": "state on the newest address",

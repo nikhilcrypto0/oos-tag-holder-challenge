@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from alias import learn_aliases, link_by_alias
 from resolve import Resolver, link_by_name, link_titles_by_vehicle, vehicle_owner_map
 
 _HERE = Path(__file__).resolve().parent
@@ -64,29 +65,43 @@ def build_evidence(D, verbose=True):
     res = Resolver(cand)
     frames = []
 
+    # Titles resolve first: vehicle_ref both recovers their own replaced-name rows and
+    # exposes each candidate's alias, which the keyless feeds then use (see alias.py).
+    ttl = D["ttl"]
+    t_ri, t_ci, t_wt = link_titles_by_vehicle(res, ttl)
+    alias_map = learn_aliases(res, ttl)
+    if verbose:
+        print(f"  aliases learned from vehicle_ref: {len(alias_map)}")
+
     name_specs = [
         ("adr", "first_name", "last_name", None, "state", "effective_start_date",
          {"kind": "source_type"}),
         ("lic", "first_name", "last_name", "date_of_birth", "credential_state", "event_date",
          {"kind": "event_type", "status": "credential_status"}),
         ("ext", "first_name", "last_name", None, "signal_state", "effective_date",
-         {"kind": "signal_type", "quality": "evidence_quality"}),
+         {"kind": "signal_type", "quality": "evidence_quality", "desc": "source_description"}),
         ("wrk", "first_name", "last_name", None, "work_state", "observed_date",
          {"kind": "source_type"}),
     ]
     for stream, fcol, lcol, dcol, scol, dtcol, extras in name_specs:
         df = D[stream]
         ri, ci, wt = link_by_name(res, df, fcol, lcol, dcol)
+        claimed = np.zeros(len(df), bool)
+        claimed[ri] = True
+        a_ri, a_ci, a_wt = link_by_alias(alias_map, df, fcol, lcol, claimed)
+        ri = np.concatenate([ri, a_ri])
+        ci = np.concatenate([ci, a_ci])
+        wt = np.concatenate([wt, a_wt])
         sub = df.iloc[ri].reset_index(drop=True)
         t = _frame(sub, ci, wt, stream, scol, dtcol, False, extras)
         if stream == "adr":
             t["open_ended"] = sub.effective_end_date.isna().values
         frames.append(t)
         if verbose:
-            print(f"  {stream}: {len(set(ri))}/{len(df)} source rows linked")
+            print(f"  {stream}: {len(set(ri))}/{len(df)} source rows linked "
+                  f"({len(a_ri)} via alias)")
 
-    ttl = D["ttl"]
-    ri, ci, wt = link_titles_by_vehicle(res, ttl)
+    ri, ci, wt = t_ri, t_ci, t_wt
     sub = ttl.iloc[ri].reset_index(drop=True)
     frames.append(_frame(sub, ci, wt, "ttl", "event_state", "event_date", False,
                          {"kind": "event_type", "vehicle_ref": "vehicle_ref"}))
@@ -106,6 +121,12 @@ def build_evidence(D, verbose=True):
     ri = np.concatenate([np.array(ri, int), rest[r2]])
     ci = np.concatenate([np.array(ci, int), c2])
     wt = np.concatenate([np.array(wt, float), w2])
+    claimed = np.zeros(len(up), bool)
+    claimed[ri] = True
+    a_ri, a_ci, a_wt = link_by_alias(alias_map, up, "first_name", "last_name", claimed)
+    ri = np.concatenate([ri, a_ri])
+    ci = np.concatenate([ci, a_ci])
+    wt = np.concatenate([wt, a_wt])
     sub = up.iloc[ri].reset_index(drop=True)
     t = _frame(sub, ci, wt, None, "state", "effective_date", True,
                {"kind": "record_action", "vehicle_ref": "vehicle_ref"})
@@ -116,7 +137,7 @@ def build_evidence(D, verbose=True):
               f"({int(has_veh.sum())} via vehicle_ref)")
 
     ev = pd.concat(frames, ignore_index=True)
-    for c in ("quality", "status", "open_ended", "vehicle_ref", "kind"):
+    for c in ("quality", "status", "open_ended", "vehicle_ref", "kind", "desc"):
         if c not in ev:
             ev[c] = np.nan
     ev["date"] = pd.to_datetime(ev["date"])

@@ -6,7 +6,7 @@ class probabilities, and a review-priority value, at T0 and T1.
 **Start with [SUMMARY.md](SUMMARY.md)** — one page.
 **[METHOD.md](METHOD.md)** is the full write-up: what the data turned out to be, how
 identities are resolved, why the model is ordinal, the validation results, and the eight
-ideas that were tested and rejected.
+ideas tested and rejected, and whether the headline number is honest.
 
 ## Submission file
 
@@ -48,6 +48,7 @@ python model_selection.py
 | module | responsibility |
 |---|---|
 | `er.py` | name normalisation, edit distance, the fuzzy-lookup index |
+| `alias.py` | second-identity recovery: learns each candidate's replaced name from `vehicle_ref` |
 | `resolve.py` | entity resolution — name matching, and vehicle-keyed title grouping |
 | `pipeline.py` | data loading; builds the tidy evidence table |
 | `featurize.py` | per-candidate, per-phase features |
@@ -55,7 +56,10 @@ python model_selection.py
 | `predict.py` | end-to-end run; writes the submission, audit file and model card |
 | `validate.py` | submission-format checks |
 | `diagnostics.py`, `model_selection.py` | reproduce the claims in METHOD.md |
-| `experiments.py` | the ideas that were tested and rejected (METHOD.md section 8) |
+| `experiments.py` | ideas tested and rejected (METHOD.md section 9) |
+| `audit_unused.py`, `audit_alias.py`, `audit_features.py` | the process audit: fields never used, the alias hypothesis, the features it surfaced |
+| `audit_honest.py` | nested selection — the unbiased estimate (METHOD.md section 6) |
+| `extra_features.py` | feature builder shared by the audit scripts |
 
 ## Headline numbers
 
@@ -64,14 +68,18 @@ both phases (600 rows):
 
 | | model | baseline |
 |---|---:|---:|
-| log loss | 0.934 | 1.096 |
-| accuracy | 0.527 | 0.355 |
-| macro F1 | 0.528 | 0.175 |
-| macro AUC | 0.719 | 0.500 |
-| priority AUC for `review_warranted` | 0.781 | 0.500 |
+| log loss | 0.906 | 1.096 |
+| accuracy | 0.558 | 0.355 |
+| macro F1 | 0.560 | 0.175 |
+| macro AUC | 0.740 | 0.500 |
+| priority AUC for `review_warranted` | 0.811 | 0.500 |
 
-T1 scores better than T0 (log loss 0.914 vs 0.954), i.e. the model does move on the later
+T1 scores better than T0 (log loss 0.880 vs 0.931), i.e. the model does move on the later
 evidence rather than ignoring it.
+
+Those figures share the 300 labels with the design search. **Nested selection puts the
+unbiased figure at 0.913 log loss** (METHOD.md section 6) — treat that as the expectation
+on held-out cases.
 
 The output supports staff review. It is not a residency, fee, or enforcement
 determination.

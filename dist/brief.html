@@ -1,0 +1,539 @@
+<title>Out-of-State Tag Brief</title>
+<style>
+  :root {
+    --paper:      #F0F2F5;
+    --surface:    #FFFFFF;
+    --ink:        #101720;
+    --muted:      #56606E;
+    --rule:       #D3D9E1;
+    --plate:      #0B2F5E;
+    --gold:       #B8860F;
+    --gold-bg:    #FBF3DC;
+    --gold-rule:  #D9A227;
+    --done:       #2F6B52;
+    --shadow:     0 1px 2px rgba(11,47,94,.06), 0 8px 24px rgba(11,47,94,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:     #0A1420;
+      --surface:   #111E2E;
+      --ink:       #E4E9EF;
+      --muted:     #94A1B2;
+      --rule:      #26374B;
+      --plate:     #8FBCEC;
+      --gold:      #E8BC4E;
+      --gold-bg:   #241D0C;
+      --gold-rule: #A87E1C;
+      --done:      #63AD8A;
+      --shadow:    0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:     #0A1420;
+    --surface:   #111E2E;
+    --ink:       #E4E9EF;
+    --muted:     #94A1B2;
+    --rule:      #26374B;
+    --plate:     #8FBCEC;
+    --gold:      #E8BC4E;
+    --gold-bg:   #241D0C;
+    --gold-rule: #A87E1C;
+    --done:      #63AD8A;
+    --shadow:    0 1px 2px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.28);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 17px/1.62 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 56px 24px 96px; }
+  .col  { max-width: 66ch; }
+
+  .eyebrow {
+    font: 600 11.5px/1 ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--muted);
+  }
+
+  h1 {
+    font: 400 40px/1.14 Georgia, "New York", ui-serif, "Times New Roman", serif;
+    color: var(--plate); margin: 14px 0 0; letter-spacing: -.01em; text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 19px; color: var(--muted); margin: 14px 0 0; max-width: 58ch;
+    text-wrap: pretty;
+  }
+
+  .facts {
+    display: flex; flex-wrap: wrap; gap: 0; margin: 34px 0 0;
+    border: 1px solid var(--rule); border-radius: 6px; overflow: hidden;
+    background: var(--surface); box-shadow: var(--shadow);
+  }
+  .fact { flex: 1 1 150px; padding: 14px 18px; border-right: 1px solid var(--rule); }
+  .fact:last-child { border-right: 0; }
+  .fact dt {
+    font: 600 10.5px/1 ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  }
+  .fact dd {
+    margin: 7px 0 0; font-size: 16px; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .fact dd.ok  { color: var(--done); }
+  .fact dd.now { color: var(--gold); }
+
+  section { margin: 54px 0 0; }
+  h2 {
+    font: 400 27px/1.25 Georgia, "New York", ui-serif, serif;
+    color: var(--plate); margin: 10px 0 16px; text-wrap: balance;
+  }
+  h3 {
+    font: 600 16px/1.4 -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 26px 0 8px;
+  }
+  p { margin: 0 0 15px; text-wrap: pretty; }
+  .col > p:last-child { margin-bottom: 0; }
+  strong { font-weight: 650; }
+  em { font-style: italic; }
+
+  code, .mono {
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .875em;
+  }
+  code {
+    background: var(--surface); border: 1px solid var(--rule);
+    padding: 1px 5px; border-radius: 4px; white-space: nowrap;
+  }
+
+  ul, ol { margin: 0 0 15px; padding-left: 22px; }
+  li { margin: 0 0 7px; }
+  li::marker { color: var(--muted); }
+
+  .io {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 22px 0 4px;
+  }
+  @media (max-width: 620px) { .io { grid-template-columns: 1fr; } }
+  .io > div {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 6px; padding: 16px 18px; box-shadow: var(--shadow);
+  }
+  .io h4 {
+    margin: 0 0 10px;
+    font: 600 10.5px/1 ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  }
+  .io ul { margin: 0; padding-left: 18px; font-size: 15.5px; }
+  .io li { margin-bottom: 5px; }
+
+  figure {
+    margin: 30px 0; padding: 24px 20px 18px;
+    background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 6px; box-shadow: var(--shadow); overflow-x: auto;
+  }
+  figure svg { display: block; width: 100%; max-width: 100%; height: auto; color: var(--ink); }
+  figcaption {
+    margin: 16px auto 0; max-width: 62ch; font-size: 14.5px; line-height: 1.55;
+    color: var(--muted); text-wrap: pretty;
+  }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  table { border-collapse: collapse; width: 100%; margin: 20px 0 8px; font-size: 15.5px; }
+  caption {
+    text-align: left; padding-bottom: 10px; color: var(--muted); font-size: 14.5px;
+  }
+  th, td {
+    border-bottom: 1px solid var(--rule); padding: 9px 12px; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    font: 600 10.5px/1 ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+    border-bottom: 1.5px solid var(--plate); padding-bottom: 8px;
+  }
+  tbody td.score { font-weight: 700; color: var(--plate); }
+  tbody tr:last-child td { border-bottom: 0; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; margin: 22px 0 0; }
+  .steps li {
+    counter-increment: step; position: relative; padding-left: 44px; margin-bottom: 20px;
+  }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 1px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--plate); color: var(--paper);
+    font: 600 13px/28px ui-monospace, "SF Mono", Menlo, monospace;
+    text-align: center;
+  }
+  .steps b { display: block; margin-bottom: 2px; }
+
+  .callout {
+    margin: 34px 0 0; padding: 20px 22px;
+    background: var(--gold-bg); border: 1px solid var(--gold-rule);
+    border-left-width: 4px; border-radius: 6px;
+  }
+  .callout .eyebrow { color: var(--gold); }
+  .callout h2 { margin: 10px 0 12px; font-size: 22px; color: var(--ink); }
+  .callout p:last-child, .callout ol:last-child { margin-bottom: 0; }
+
+  footer {
+    margin: 60px 0 0; padding-top: 20px; border-top: 1px solid var(--rule);
+    font-size: 14.5px; color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+  <header class="col">
+    <div class="eyebrow">Competition brief &middot; team entry</div>
+    <h1>Out-of-State Tag Brief</h1>
+    <p class="standfirst">
+      What the challenge asked for, what turned out to be hard about it, and what we
+      actually built. Enough to explain the whole thing out loud.
+    </p>
+    <dl class="facts">
+      <div class="fact"><dt>Cases</dt><dd>12,000</dd></div>
+      <div class="fact"><dt>Rows to submit</dt><dd>24,000</dd></div>
+      <div class="fact"><dt>Solution</dt><dd class="ok">Finished</dd></div>
+      <div class="fact"><dt>Deadline</dt><dd class="now">19 Aug</dd></div>
+    </dl>
+  </header>
+
+  <section class="col">
+    <div class="eyebrow">The ask</div>
+    <h2>What they asked us to do</h2>
+    <p>
+      A state motor-vehicle department has 12,000 vehicle records it is unsure about, and
+      six piles of administrative records that might say something useful about them. The
+      question for each vehicle is narrow and practical: <strong>should a staff member
+      spend time looking at this one?</strong>
+    </p>
+    <p>
+      Critically, the data <em>never states</em> whether a vehicle is registered in another
+      state. There is no column to look up. The answer has to be inferred from records that
+      only circle the question.
+    </p>
+    <div class="io">
+      <div>
+        <h4>What they gave us</h4>
+        <ul>
+          <li>12,000 vehicle cases</li>
+          <li>Six record feeds: addresses, licences, vehicle titles, work locations, external signals, plus a later batch of updates</li>
+          <li>Answers for only <strong>300</strong> of the cases</li>
+        </ul>
+      </div>
+      <div>
+        <h4>What they wanted back</h4>
+        <ul>
+          <li>One of three verdicts per case: <span class="mono">review warranted</span>, <span class="mono">not warranted</span>, or <span class="mono">insufficient evidence</span></li>
+          <li>Three probabilities that add up to 1</li>
+          <li>A priority score from 0 to 1</li>
+          <li>All of it twice: before and after the later updates arrive</li>
+        </ul>
+      </div>
+    </div>
+    <h3>How they score it</h3>
+    <p>
+      Six ways: are the verdicts right, is the priority ranking useful, are the
+      probabilities <em>honest</em> (if you say 70%, it should happen about 70% of the
+      time), does the system react sensibly when new evidence arrives, does it hold up on
+      the 11,700 cases whose answers they kept back, and finally a human reading it for
+      whether it is clear and checkable.
+    </p>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Obstacle one</div>
+    <h2>The records don't say who they belong to</h2>
+    <p>
+      There is no ID number connecting a vehicle case to the six record feeds. The only
+      thing to match on is people's names, and the names have been deliberately mangled:
+      cut short to an initial, letters swapped, characters transposed, stray spaces
+      inserted.
+    </p>
+    <p>
+      Working out <em>how</em> they were mangled was the single most valuable thing we did.
+      The vehicle-title feed has one thing the others don't: a vehicle reference number.
+      That let us group a car's records together without trusting the names at all, and
+      then look at what the names inside each group actually did.
+    </p>
+  </section>
+
+  <figure>
+    <svg viewBox="0 0 720 250" role="img"
+         aria-label="One vehicle's four title records: three carry the same lightly corrupted owner name and one carries a completely unrelated name, but the shared vehicle reference number binds all four together.">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+        </marker>
+      </defs>
+
+      <text x="20" y="22" font-size="12" font-weight="600" fill="currentColor"
+            font-family="ui-monospace, Menlo, monospace" letter-spacing="1.2">VH-8177541146</text>
+      <text x="150" y="22" font-size="12" fill="currentColor" opacity=".62">
+        one vehicle, four title records</text>
+
+      <rect x="20" y="34" width="16" height="176" rx="3"
+            fill="currentColor" opacity=".10"/>
+      <line x1="28" y1="34" x2="28" y2="210" stroke="currentColor"
+            stroke-width="1.5" opacity=".45"/>
+
+      <g font-size="13" font-family="ui-monospace, Menlo, monospace">
+        <rect x="56" y="40" width="300" height="34" rx="4" fill="none"
+              stroke="currentColor" stroke-opacity=".38"/>
+        <text x="70" y="62" fill="currentColor">SYNGIV-Nwzgpc  SYNFAM-Nspy</text>
+        <line x1="28" y1="57" x2="56" y2="57" stroke="currentColor"
+              stroke-opacity=".45" marker-end="url(#ar)"/>
+
+        <rect x="56" y="82" width="300" height="34" rx="4" fill="none"
+              stroke="currentColor" stroke-opacity=".38"/>
+        <text x="70" y="104" fill="currentColor">SYNGIV-N       SYNFAM-Nspy</text>
+        <line x1="28" y1="99" x2="56" y2="99" stroke="currentColor"
+              stroke-opacity=".45" marker-end="url(#ar)"/>
+
+        <rect x="56" y="124" width="300" height="34" rx="4" fill="none"
+              stroke="currentColor" stroke-opacity=".38"/>
+        <text x="70" y="146" fill="currentColor">SYNGIV-Nwzgp   SYNFAM-nNspy</text>
+        <line x1="28" y1="141" x2="56" y2="141" stroke="currentColor"
+              stroke-opacity=".45" marker-end="url(#ar)"/>
+
+        <rect x="56" y="166" width="300" height="34" rx="4" fill="none"
+              stroke="#D9A227" stroke-width="1.8"/>
+        <text x="70" y="188" fill="currentColor">SYNGIV-Alectntl SYNFAM-Aljly</text>
+        <line x1="28" y1="183" x2="56" y2="183" stroke="#D9A227"
+              stroke-width="1.8" marker-end="url(#ar)"/>
+      </g>
+
+      <g font-size="12.5">
+        <text x="378" y="62" fill="currentColor" opacity=".72">the real owner</text>
+        <text x="378" y="104" fill="currentColor" opacity=".72">same name, cut short</text>
+        <text x="378" y="146" fill="currentColor" opacity=".72">same name, letters swapped</text>
+        <text x="378" y="181" fill="#B8860F" font-weight="600">a different person entirely</text>
+        <text x="378" y="197" fill="currentColor" opacity=".72">— but still this vehicle's record</text>
+      </g>
+
+      <line x1="20" y1="224" x2="700" y2="224" stroke="currentColor" stroke-opacity=".18"/>
+      <text x="20" y="242" font-size="12.5" fill="currentColor" opacity=".72">
+        Holds for 98% of vehicles: three names agree, one is unrelated.</text>
+    </svg>
+    <figcaption>
+      <b>The noise pattern.</b> Every case has four records per feed, and in each set of
+      four, <b>one record's name has been replaced outright</b>. On the title feed the
+      vehicle number rescues that record anyway. On the other feeds there is no equivalent
+      number — which is where we first stopped, and where a second pass found more.
+    </figcaption>
+  </figure>
+
+  <section class="col">
+    <div class="eyebrow">The thing we nearly missed</div>
+    <h2>The fake name is the same fake name every time</h2>
+    <p>
+      We first assumed that replaced name was random junk, and wrote those records off.
+      Going back over our own process, we tested the assumption instead of trusting it —
+      and it was wrong. <strong>Each case is given one persistent fake identity, reused
+      across every feed.</strong>
+    </p>
+    <p>
+      The same fake name turns up in the address feed 43% of the time, against a 3.8%
+      rate for a name we made up as a control. Nearly all of those fake identities belong
+      to exactly one case. And the records carrying them are unreadable to ordinary name
+      matching 73% of the time, against 20% for the feed overall — meaning they are
+      precisely the records we had been throwing away.
+    </p>
+    <p>
+      So we learn each case's fake name from the title feed, where the vehicle number
+      tells us whose record it is, then use it to reclaim their records everywhere else.
+      That recovered <strong>7,833 records</strong> across three feeds and moved the
+      address signal from +0.29 to +0.32 and the whole model from 0.934 to 0.906.
+    </p>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">Obstacle two</div>
+    <h2>The three verdicts are a scale, not three boxes</h2>
+    <p>
+      The three answers look like unrelated categories. They aren't. Reading the 300
+      known cases across both time points, <strong>no case ever jumps straight from
+      "not warranted" to "warranted"</strong>. Every case that changes its mind passes
+      through "insufficient evidence" on the way.
+    </p>
+    <p>
+      That is the fingerprint of a single sliding score with two cut-off points on it. So
+      we built the model that way — one score and two thresholds, instead of three
+      separate classifiers arguing with each other. With only 300 answers to learn from,
+      estimating one thing well beats estimating three things badly.
+    </p>
+  </section>
+
+  <figure>
+    <svg viewBox="0 0 720 220" role="img"
+         aria-label="A single left-to-right evidence score with two thresholds dividing it into not warranted, insufficient evidence and review warranted. Observed cases move only between neighbouring bands; a direct jump from not warranted to review warranted never occurs.">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+        </marker>
+        <marker id="ar2g" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#D9A227"/>
+        </marker>
+      </defs>
+
+      <rect x="40" y="70" width="213" height="46" rx="4"
+            fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".3"/>
+      <rect x="253" y="70" width="214" height="46"
+            fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".3"/>
+      <rect x="467" y="70" width="213" height="46" rx="4"
+            fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".3"/>
+
+      <line x1="253" y1="62" x2="253" y2="124" stroke="currentColor" stroke-width="2"/>
+      <line x1="467" y1="62" x2="467" y2="124" stroke="currentColor" stroke-width="2"/>
+
+      <g text-anchor="middle" font-size="13">
+        <text x="146" y="92" fill="currentColor" font-weight="600">review not warranted</text>
+        <text x="146" y="108" fill="currentColor" opacity=".66" font-size="12">recent records point elsewhere</text>
+        <text x="360" y="92" fill="currentColor" font-weight="600">insufficient evidence</text>
+        <text x="360" y="108" fill="currentColor" opacity=".66" font-size="12">the records disagree</text>
+        <text x="573" y="92" fill="currentColor" font-weight="600">review warranted</text>
+        <text x="573" y="108" fill="currentColor" opacity=".66" font-size="12">recent records point to Delaware</text>
+      </g>
+
+      <text x="253" y="54" text-anchor="middle" font-size="11.5" fill="currentColor"
+            opacity=".7" font-family="ui-monospace, Menlo, monospace">threshold 1</text>
+      <text x="467" y="54" text-anchor="middle" font-size="11.5" fill="currentColor"
+            opacity=".7" font-family="ui-monospace, Menlo, monospace">threshold 2</text>
+
+      <line x1="40" y1="30" x2="680" y2="30" stroke="currentColor" stroke-opacity=".45"
+            marker-end="url(#ar2)"/>
+      <text x="40" y="22" font-size="12" fill="currentColor" opacity=".7">weaker evidence of being in Delaware now</text>
+      <text x="680" y="22" font-size="12" text-anchor="end" fill="currentColor" opacity=".7">stronger</text>
+
+      <path d="M 200 132 C 230 158, 290 158, 320 132" fill="none"
+            stroke="currentColor" stroke-opacity=".55" marker-end="url(#ar2)"/>
+      <path d="M 400 132 C 430 158, 490 158, 520 132" fill="none"
+            stroke="currentColor" stroke-opacity=".55" marker-end="url(#ar2)"/>
+      <text x="360" y="176" text-anchor="middle" font-size="12" fill="currentColor" opacity=".72">
+        new evidence moves a case one band at a time</text>
+
+      <path d="M 146 196 C 250 172, 470 172, 573 196" fill="none"
+            stroke="#D9A227" stroke-width="1.8" stroke-dasharray="5 4"
+            marker-end="url(#ar2g)"/>
+      <line x1="352" y1="172" x2="368" y2="188" stroke="#D9A227" stroke-width="2"/>
+      <line x1="368" y1="172" x2="352" y2="188" stroke="#D9A227" stroke-width="2"/>
+      <text x="360" y="212" text-anchor="middle" font-size="12" fill="#B8860F" font-weight="600">
+        never observed: 0 of 300 cases skip the middle</text>
+    </svg>
+    <figcaption>
+      <b>Why the model has this shape.</b> The verdict depends on one underlying quantity —
+      how strongly the <em>recent</em> records suggest the person is now operating in
+      Delaware. Someone who has clearly moved to Delaware should be registering their
+      vehicle there, which is exactly the case worth a staff member's time.
+    </figcaption>
+  </figure>
+
+  <section class="col">
+    <div class="eyebrow">The build</div>
+    <h2>What we actually did</h2>
+    <ol class="steps">
+      <li>
+        <b>Worked out the noise before touching a model.</b>
+        Used the vehicle number as an independent check to discover the three-good-plus-one-
+        replaced pattern, then confirmed it a second way on the licence feed using dates of birth.
+      </li>
+      <li>
+        <b>Rebuilt each person's paper trail, three ways.</b>
+        Fuzzy name matching that understands truncation, swapped letters and typos;
+        vehicle-number grouping for titles, which took that feed from 38,582 to 47,581
+        usable records; and fake-identity recovery, which reclaimed another 7,833 across
+        the other feeds.
+      </li>
+      <li>
+        <b>Scored the evidence by recency.</b>
+        Older records count for less, halving in weight every 150 days. We tested six other
+        ways of combining the records; this won. One of the six feeds, work location, turned
+        out to be pure noise, so it is excluded rather than quietly trusted.
+      </li>
+      <li>
+        <b>Fitted one sliding score with two thresholds</b>
+        and checked it honestly — trained on part of the 300 known answers, tested on the rest,
+        repeated 20 times. Then tested eight further ideas to improve it. All eight failed,
+        which is how we know we're at the ceiling rather than at the first thing that worked.
+      </li>
+    </ol>
+  </section>
+
+  <section class="col">
+    <div class="eyebrow">The result</div>
+    <h2>How well it does</h2>
+    <table>
+      <caption>Measured on held-back cases the model had not seen, averaged over 20 runs.</caption>
+      <thead>
+        <tr><th>What it measures</th><th>Ours</th><th>Guessing</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Probability honesty <span class="mono">(lower is better)</span></td><td class="score">0.906</td><td>1.096</td></tr>
+        <tr><td>Verdicts correct</td><td class="score">55.8%</td><td>35.5%</td></tr>
+        <tr><td>Ranking quality</td><td class="score">0.740</td><td>0.500</td></tr>
+        <tr><td>Priority ordering</td><td class="score">0.811</td><td>0.500</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Two things matter beyond the headline. The scores get <em>better</em> after the later
+      updates arrive (0.880 against 0.931), so the system genuinely reacts to new evidence
+      rather than ignoring it. And when it says 70%, roughly 70% of those cases really do
+      turn out that way — with no fudge factor applied afterwards.
+    </p>
+    <p>
+      Alongside the predictions we hand over an audit file: for every case, the newest
+      record from each feed with its date, how fresh the evidence is, which way the late
+      updates pushed it, and what drove the score. A reviewer can check any single case
+      without reading a line of our code.
+    </p>
+    <h3>And is that number honest?</h3>
+    <p>
+      Worth asking, because we tried about forty variations against the same 300 known
+      answers, and picking the winner of forty tries always flatters it. So we measured
+      the flattery: choose the design inside a training slice, then score once on cases
+      that slice never saw. That gives <strong>0.913</strong> rather than 0.906 — a bias
+      of 0.008, small because the same design won 27 times out of 30. <strong>0.913 is
+      the number to expect</strong>, and it still beats our earlier version's flattering
+      0.934.
+    </p>
+
+    <h3>Where it stops</h3>
+    <p>
+      Only 300 known answers, so every number above carries roughly &plusmn;0.03 of wobble.
+      About one record in eight is still permanently unattributable. And each case only has
+      about fourteen relevant records split between two states, so there is a hard limit on
+      how precisely anyone could pin this down. We think we are near it, and we say so in
+      the write-up rather than overclaiming.
+    </p>
+  </section>
+
+  <div class="callout col">
+    <div class="eyebrow">Outstanding</div>
+    <h2>The only thing left</h2>
+    <p>
+      Everything is built, validated and packaged. What is missing is purely
+      administrative:
+    </p>
+    <ol>
+      <li>The submission form link</li>
+      <li>Your teammate's name, email and GitHub username for the entry</li>
+      <li>Confirmation that only one entry is going in for the team</li>
+    </ol>
+  </div>
+
+  <footer class="col">
+    Supporting material: <span class="mono">SUMMARY.md</span> (one page),
+    <span class="mono">METHOD.md</span> (full write-up),
+    <span class="mono">case_predictions.csv</span> (the submission),
+    <span class="mono">case_audit.csv</span> (per-case evidence trail).
+    Every figure quoted here is reproduced by running
+    <span class="mono">diagnostics.py</span> and <span class="mono">model_selection.py</span>.
+  </footer>
+</div>

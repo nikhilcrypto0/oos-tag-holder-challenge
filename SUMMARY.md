@@ -1,6 +1,6 @@
 # Out-of-State Tag Holder Review — one-page summary
 
-**Deliverable:** `case_predictions.csv` — 24,000 rows (12,000 cases × T0/T1) in the
+**Deliverable:** `case_predictions.csv` — 24,000 rows (12,000 cases x T0/T1) in the
 template's exact schema. Full write-up in `METHOD.md`.
 
 ## The problem behind the problem
@@ -15,28 +15,32 @@ four rows and 98% split three-and-one, with the fourth name unrelated to the oth
 Grouping the licence feed by date of birth reproduces the same pattern, so it is the
 generator's noise model, not a quirk of one table.
 
-Two consequences:
+Then the part that mattered most: **the replaced name is a persistent alias, not fresh
+noise.** The same fake name recurs across feeds at 43% against a 3.8% chance baseline, and
+4,906 of 5,278 aliases point at exactly one candidate. So the alias is learned on the
+title feed, where `vehicle_ref` reveals whose row it is, and then used to claim the
+matching rows in the feeds that have no key of their own — 8,067 aliases, recovering 7,833
+records that name matching drops.
 
-- The title feed **can** recover its fourth row, because `vehicle_ref` says which vehicle
-  it belongs to. Doing so lifts that feed from 38,582 to 47,581 linked rows and its signal
-  from rho +0.25 to +0.37.
-- The other feeds **cannot**. Forcing an assignment there made the signal *worse* — an
-  unrelated name carries an unrelated state. Accepting ~80% recall is the better trade,
-  and 9,369 of 12,000 candidates land on exactly three address rows as predicted.
+What is *not* recoverable is left alone. Forcing unclaimed rows onto candidates made the
+signal worse, because an unrelated name carries an unrelated state.
 
-## The classes are ordered, so the model is
+## Two findings that shaped the model
 
-In the development labels no case ever jumps from `review_not_warranted` to
-`review_warranted` between phases — every move passes through `insufficient_evidence`.
-That is one latent score with two thresholds, so the model is a **proportional-odds
-ordinal logistic**: one direction vector and two cut-points instead of three independent
-classifiers, which matters at 300 labelled candidates. On identical features it beats
-multinomial logistic (0.953), random forest (0.981) and gradient boosting (1.038).
+**The classes are ordered.** In the development labels no case ever jumps from
+`review_not_warranted` to `review_warranted` between phases — every move passes through
+`insufficient_evidence`. That is one latent score with two thresholds, so the model is a
+**proportional-odds ordinal logistic**: one direction vector and two cut-points instead of
+three independent classifiers, which matters at 300 labelled candidates. On identical
+features it beats multinomial logistic (0.953), random forest (0.981) and gradient
+boosting (1.038).
 
-The direction is **recency**: cases whose recent records point to Delaware are the ones
-warranting review. A 150-day exponential half-life beats every alternative aggregation
-tried, including a change-point fit. The work-location feed is complete, uncorrupted and
-correlates −0.07 with the answer — it is excluded from the pooled score.
+**The current address is the single best record in the data.** The address row with a
+blank end date is where the person lives now, and on its own it out-predicts the entire
+address feed (rho +0.41 against +0.32). The direction is recency generally: a 150-day
+exponential half-life beats every alternative aggregation tried, including a change-point
+fit. The work-location feed is complete, uncorrupted and correlates -0.07 with the answer
+— it is excluded.
 
 ## Results
 
@@ -44,33 +48,40 @@ Grouped 5-fold cross-validation, 20 repeats, 600 labelled rows:
 
 | | model | baseline |
 |---|---:|---:|
-| log loss | **0.934** | 1.096 |
-| accuracy | **0.527** | 0.355 |
-| macro F1 | **0.528** | 0.175 |
-| macro AUC | **0.719** | 0.500 |
-| priority ranking AUC | **0.781** | 0.500 |
+| log loss | **0.906** | 1.096 |
+| accuracy | **0.558** | 0.355 |
+| macro F1 | **0.560** | 0.175 |
+| macro AUC | **0.740** | 0.500 |
+| priority ranking AUC | **0.811** | 0.500 |
 
-T1 scores better than T0 (0.914 vs 0.954) — the model moves on the later evidence.
-Probabilities are calibrated with no post-hoc fitting (predicted vs observed agree within
-±0.05 across quintiles). Errors sit on the adjacent class: only 39 of 600 rows cross the
-whole scale.
+T1 scores better than T0 (0.880 vs 0.931) — the model moves on the later evidence.
+Probabilities are calibrated with no post-hoc fitting. Errors sit on the adjacent class:
+only 31 of 600 rows cross the whole scale.
 
-`review_priority = p(warranted) + 0.5 × p(insufficient)` — a case that warrants review
+`review_priority = p(warranted) + 0.5 x p(insufficient)` — a case that warrants review
 takes full priority, a case the evidence cannot decide still needs a person and takes half.
+
+## Is that number honest?
+
+Those figures come from the same 300 labels that drove roughly forty design comparisons,
+which inflates them. **Nested selection** — choosing the feature set and regularisation
+inside a training split, then scoring once on unseen candidates — gives **0.913**, so the
+selection bias is 0.008. A paired bootstrap puts the improvement over our first version at
+0.022 log loss, 95% interval [+0.003, +0.040], better in 98.8% of resamples. Treat 0.913
+as the number to expect on held-out cases.
 
 ## Honest ceiling
 
-Eight further ideas were tested and rejected, including semi-supervised self-training
-(worse at every setting) and three routes to recovering the unattributable rows. Each
+Nine ideas were tested and rejected, including semi-supervised self-training (worse at
+every setting) and two further routes to recovering the unattributable rows. Each
 candidate has roughly fourteen state-bearing records split between two states, so the
-latent direction can only be estimated so precisely. Macro AUC ~0.72 looks close to what
-this data supports.
+latent direction can only be estimated so precisely.
 
 ## For the reviewer
 
 `case_audit.csv` carries the same 24,000 rows plus the evidence behind each score — newest
 record per feed with its date, evidence freshness, T1 update direction, and the signed
 contribution of each feature block — so a case can be checked without reading the code.
-`diagnostics.py` and `model_selection.py` reproduce every number quoted above.
+`diagnostics.py`, `model_selection.py`, `audit_*.py` reproduce every number quoted above.
 
 The output supports staff review. It is not a residency, fee, or enforcement determination.

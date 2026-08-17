@@ -64,6 +64,23 @@ def build_features(ev, cand, phase, t1_ref):
     block(st[st.stream.isin(CORE)], "core")
     block(st, "glob")
 
+    # The address row with no end date is where the person lives *now*. That single
+    # record predicts the label better than the whole address feed does (rho +0.39 vs
+    # +0.29), so it gets its own block rather than being averaged in with the history.
+    op = st[(st.stream == "adr") & (st.open_ended == True)]
+    F["adr_open_de"] = _share(op, n, 150)
+    F["adr_open_n"] = _bc(op.cand.values, op.w.values, n)
+    op_last = op.sort_values(["cand", "date"]).groupby("cand").tail(1).set_index("cand")
+    F["adr_open_last_de"] = op_last.de.reindex(F.index).values
+    F["adr_open_age"] = op_last.age.reindex(F.index).values
+
+    # Record categories that carry two rows per candidate rather than one: a less noisy
+    # read of the same feed.
+    for stream, kind, name in (("ttl", "record_update", "ttl_recupd"),
+                               ("lic", "credential_update", "lic_credupd"),
+                               ("ext", "reference_update", "ext_refupd")):
+        F[f"{name}_de"] = _share(st[(st.stream == stream) & (st.kind == kind)], n, 150)
+
     F["core_last_mean"] = F[[f"{s}_last_de" for s in CORE]].mean(axis=1)
     F["core_last_std"] = F[[f"{s}_last_de" for s in CORE]].std(axis=1)
     F["core_sh150_std"] = F[[f"{s}_sh150" for s in CORE]].std(axis=1)
@@ -108,7 +125,9 @@ FEATURES = (
     ["obs_state_oos"]
     + [f"{s}_{k}" for s in ALL_STREAMS + ["core", "glob"]
        for k in ["sh90", "sh150", "sh365", "shflat", "n", "last_de", "last_age"]]
-    + ["core_last_mean", "core_last_std", "core_sh150_std",
+    + ["adr_open_de", "adr_open_n", "adr_open_last_de", "adr_open_age",
+       "ttl_recupd_de", "lic_credupd_de", "ext_refupd_de",
+       "core_last_mean", "core_last_std", "core_sh150_std",
        "ev_n", "ev_nullshare", "ev_limited", "ev_badstatus", "ev_n180", "ev_n365",
        "ev_linkconf", "ev_nstates", "ev_minage",
        "t1_n", "t1_de", "t1_last_de", "t1_ttl_de", "t1_adr_de", "t1_delta", "phase_t1"]
