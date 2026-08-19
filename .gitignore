@@ -11,3 +11,11 @@ data/
 # built artefacts: PDFs are committed, the bundles are not (regenerate with build_pdfs.sh)
 dist/*.zip
 dist/case_predictions.csv
+
+# derived, regenerable (dashboard/export_linked_events.py); 25 MB
+linked_events.csv
+dashboard/audit_expected.json
+
+# teammate pipeline outputs (theirs to distribute); regenerate from their zip
+teammate/
+dashboard/audit_expected_teammate.json

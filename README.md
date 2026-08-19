@@ -16,6 +16,7 @@ ideas tested and rejected, and whether the headline number is honest.
 | the one-page story | `SUMMARY.md` (or `dist/OOS_Tag_Challenge_Summary.pdf`) |
 | the full method | `METHOD.md` (or `dist/OOS_Tag_Challenge_Method.pdf`) |
 | the live demo | `dist/console.html` — double-click it, no install needed |
+| the dashboard | `dist/dashboard.html` — verdict mix, T0→T1 movement, out-of-fold validation, evidence coverage, review queue; pipeline-agnostic, see `dashboard/README.md` |
 | text for a submission form | `FORM_ANSWERS.md` |
 | putting this on GitHub | `REPO_SETUP.md` |
 
@@ -29,6 +30,7 @@ row's three probabilities sum to exactly 1 in decimal; `review_priority` is in [
 | file | what it is |
 |---|---|
 | `dist/console.html` | the reviewer console: priority queue over all 12,000 cases, per-case evidence, and the real model running live in the page (self-contained, opens from a file) |
+| `dist/dashboard.html` | the review dashboard: headline figures, verdict mix, how verdicts moved T0→T1, out-of-fold validation (confusion, calibration, queue yield), evidence coverage, and the ranked queue with a per-case evidence drawer. Built from the submission schema plus optional side files, so it works for any pipeline (`dashboard/README.md`) |
 | `case_audit.csv` | the same 24,000 rows plus the evidence behind each score: newest record per feed with its date, evidence volume and freshness, direction of the T1 update, and the signed contribution of each feature block. Intended for the staff member working the queue. |
 | `model_card.json` | fitted thresholds and standardised coefficients, plus the cross-validated metrics |
 | `diagnostics_output.txt` | output of `diagnostics.py` — the evidence for every structural claim in METHOD.md |
